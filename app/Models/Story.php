@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Story extends Model
 {
@@ -56,5 +57,15 @@ class Story extends Model
     public function category(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'story_category', 'story_id', 'category_id');
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class, 'story_id', 'id');
+    }
+
+    public function chapters(): HasMany
+    {
+        return $this->hasMany(Chapter::class, 'story_id', 'id');
     }
 }

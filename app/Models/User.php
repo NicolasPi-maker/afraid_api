@@ -67,4 +67,9 @@ class User extends Authenticatable
         return $this->hasMany(Story::class, 'user_id', 'id');
     }
 
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class, 'user_id', 'id');
+    }
+
 }
