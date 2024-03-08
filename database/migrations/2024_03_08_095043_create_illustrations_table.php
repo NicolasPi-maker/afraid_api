@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('illustrations', function (Blueprint $table) {
             $table->id();
+            $table->string('filename');
+            $table->string('alt');
+            $table->string('extension');
+            $table->unsignedBigInteger('paragraph_id');
             $table->timestamps();
+        });
+
+        Schema::table('illustrations', function (Blueprint $table) {
+            $table->foreign('paragraph_id')
+                ->references('id')
+                ->on('paragraphes')
+                ->onDelete('cascade');
         });
     }
 

@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chapters', function (Blueprint $table) {
+        Schema::create('paragraphes', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->unsignedBigInteger('story_id');
+            $table->text('content');
+            $table->integer('order'); // order of the paragraph in the chapter (1, 2, 3, ...)
+            $table->unsignedBigInteger('chapter_id');
             $table->timestamps();
         });
 
-        Schema::table('chapters', function (Blueprint $table) {
-            $table->foreign('story_id')
+        Schema::table('paragraphes', function (Blueprint $table) {
+            $table->foreign('chapter_id')
                 ->references('id')
-                ->on('stories')
+                ->on('chapters')
                 ->onDelete('cascade');
         });
     }
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chapters');
+        Schema::dropIfExists('paragraphes');
     }
 };

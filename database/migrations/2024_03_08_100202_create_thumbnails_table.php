@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chapters', function (Blueprint $table) {
+        Schema::create('thumbnails', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('filename');
+            $table->string('alt');
+            $table->string('extension');
             $table->unsignedBigInteger('story_id');
             $table->timestamps();
         });
 
-        Schema::table('chapters', function (Blueprint $table) {
+        Schema::table('thumbnails', function (Blueprint $table) {
             $table->foreign('story_id')
                 ->references('id')
                 ->on('stories')
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chapters');
+        Schema::dropIfExists('thumbnails');
     }
 };

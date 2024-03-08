@@ -68,4 +68,14 @@ class Story extends Model
     {
         return $this->hasMany(Chapter::class, 'story_id', 'id');
     }
+
+    public function thumbnails(): HasMany
+    {
+        return $this->hasMany(Thumbnail::class, 'story_id', 'id');
+    }
+
+    public function speeches(): HasMany
+    {
+        return $this->hasMany(Speech::class, 'story_id', 'id');
+    }
 }
