@@ -17,6 +17,11 @@ class Reward extends Model
         'image',
     ];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     public function user(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
