@@ -18,6 +18,11 @@ class Speaker extends Model
     protected $fillable = [
         'name',
         'description',
+        'api_id',
+        'gender',
+        'use_case',
+        'age_description',
+        'language',
     ];
 
     public function speeches(): HasMany

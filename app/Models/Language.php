@@ -20,8 +20,18 @@ class Language extends Model
         'code',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function speeches(): HasMany
     {
         return $this->hasMany(Speech::class, 'language_id', 'id');
+    }
+
+    public function stories(): HasMany
+    {
+        return $this->hasMany(Story::class, 'language_id', 'id');
     }
 }

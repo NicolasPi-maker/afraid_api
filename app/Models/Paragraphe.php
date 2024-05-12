@@ -29,16 +29,12 @@ class Paragraphe extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'order',
+        'created_at',
+        'updated_at',
     ];
 
     public function chapter(): BelongsTo
     {
         return $this->belongsTo(Chapter::class);
-    }
-
-    public function illustrations(): HasMany
-    {
-        return $this->hasMany(Illustration::class, 'paragraph_id', 'id');
     }
 }

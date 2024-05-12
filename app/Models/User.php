@@ -72,4 +72,9 @@ class User extends Authenticatable
         return $this->hasMany(Vote::class, 'user_id', 'id');
     }
 
+    public function teasers(): HasMany
+    {
+        return $this->hasMany(Teaser::class, 'user_id', 'id');
+    }
+
 }

@@ -19,6 +19,7 @@ class Role extends Model
      */
     protected $fillable = [
         'name',
+        'level',
     ];
 
     /**
@@ -28,6 +29,12 @@ class Role extends Model
      */
     protected $casts = [
       'slug' => 'string',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'level',
     ];
 
     public function setSlugAttribute($value): void

@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('firstname');
             $table->unsignedBigInteger('role_id');
-            $table->unsignedBigInteger('subscription_id');
-            $table->rememberToken();
+            $table->unsignedBigInteger('subscription_id')->nullable();
             $table->timestamps();
         });
 

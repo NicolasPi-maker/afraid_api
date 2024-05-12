@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->unsignedBigInteger('story_id');
+            $table->integer('order');
             $table->timestamps();
         });
 

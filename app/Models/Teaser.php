@@ -7,22 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Chapter extends Model
+class Teaser extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
+        'content',
         'story_id',
-        'order',
+        'prompt_id',
+        'user_id',
     ];
 
     protected $hidden = [
+        'story_id',
         'created_at',
         'updated_at',
     ];
@@ -32,13 +30,13 @@ class Chapter extends Model
         return $this->belongsTo(Story::class);
     }
 
-    public function paragraphs(): HasMany
+    public function prompt(): BelongsTo
     {
-        return $this->hasMany(Paragraphe::class, 'chapter_id', 'id')->orderBy('order');
+        return $this->belongsTo(Prompt::class);
     }
 
-    public function illustration(): HasMany
+    public function thumbnails(): HasMany
     {
-        return $this->hasMany(Illustration::class, 'chapter_id', 'id');
+        return $this->hasMany(Thumbnail::class);
     }
 }

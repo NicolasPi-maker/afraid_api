@@ -19,7 +19,7 @@ class Thumbnail extends Model
         'filename',
         'alt',
         'extension',
-        'story_id',
+        'teaser_id',
     ];
 
     /**
@@ -31,8 +31,16 @@ class Thumbnail extends Model
         'extension',
     ];
 
-    public function story(): BelongsTo
+    protected $appends = ['url'];
+
+    public function getUrlAttribute(): string
     {
-        return $this->belongsTo(Story::class);
+        $teaser = Teaser::find($this->teaser_id);
+        return asset('storage/thumbnails/'.$teaser->title. '/'. $this->filename . '.' . $this->extension);
+    }
+
+    public function teaser(): BelongsTo
+    {
+        return $this->belongsTo(Teaser::class);
     }
 }

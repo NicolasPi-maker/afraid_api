@@ -11,19 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('thumbnails', function (Blueprint $table) {
+        Schema::create('teasers', function (Blueprint $table) {
             $table->id();
-            $table->string('filename');
-            $table->string('alt');
-            $table->string('extension');
+            $table->string('title');
+            $table->text('content');
             $table->unsignedBigInteger('story_id');
+            $table->unsignedBigInteger('prompt_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
 
-        Schema::table('thumbnails', function (Blueprint $table) {
+        Schema::table('teasers', function (Blueprint $table) {
             $table->foreign('story_id')
                 ->references('id')
                 ->on('stories')
+                ->onDelete('cascade');
+            $table->foreign('prompt_id')
+                ->references('id')
+                ->on('prompts')
+                ->onDelete('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
                 ->onDelete('cascade');
         });
     }
@@ -33,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('thumbnails');
+        Schema::dropIfExists('teaser');
     }
 };

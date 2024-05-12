@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('illustrations', function (Blueprint $table) {
+        Schema::create('thumbnails', function (Blueprint $table) {
             $table->id();
             $table->string('filename');
             $table->string('alt');
             $table->string('extension');
-            $table->unsignedBigInteger('chapter_id');
+            $table->unsignedBigInteger('teaser_id');
             $table->timestamps();
         });
 
-        Schema::table('illustrations', function (Blueprint $table) {
-            $table->foreign('chapter_id')
-                ->references('id')
-                ->on('chapters')
-                ->onDelete('cascade');
+        Schema::table('thumbnails', function (Blueprint $table) {
+            $table->foreign('teaser_id')->references('id')->on('teasers');
         });
     }
 
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('illustrations');
+        Schema::dropIfExists('thumbnails');
     }
 };

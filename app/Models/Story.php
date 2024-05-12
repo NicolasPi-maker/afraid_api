@@ -22,7 +22,6 @@ class Story extends Model
         'creation_date',
         'last_update',
         'description',
-        'teaser',
         'user_id',
         'intensity_id',
         'background_sound_id',
@@ -37,6 +36,8 @@ class Story extends Model
         'user_id',
         'intensity_id',
         'background_sound_id',
+        'created_at',
+        'updated_at',
     ];
 
     public function user(): BelongsTo
@@ -66,16 +67,21 @@ class Story extends Model
 
     public function chapters(): HasMany
     {
-        return $this->hasMany(Chapter::class, 'story_id', 'id');
-    }
-
-    public function thumbnails(): HasMany
-    {
-        return $this->hasMany(Thumbnail::class, 'story_id', 'id');
+        return $this->hasMany(Chapter::class, 'story_id', 'id')->orderBy('order');
     }
 
     public function speeches(): HasMany
     {
         return $this->hasMany(Speech::class, 'story_id', 'id');
+    }
+
+    public function teasers(): HasMany
+    {
+        return $this->hasMany(Teaser::class, 'story_id', 'id');
+    }
+
+    public function languages(): BelongsToMany
+    {
+        return $this->belongsToMany(Language::class, 'story_language', 'story_id', 'language_id');
     }
 }

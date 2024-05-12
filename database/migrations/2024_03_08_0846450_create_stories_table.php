@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('stories', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
-            $table->string('teaser');
             $table->unsignedBigInteger('user_id')->unsigned();
-            $table->unsignedBigInteger('background_sound_id')->unsigned();
-            $table->unsignedBigInteger('intensity_id')->unsigned();
+            $table->unsignedBigInteger('background_sound_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('intensity_id')->unsigned()->nullable();
             $table->timestamps();
         });
 

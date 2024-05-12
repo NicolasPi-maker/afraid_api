@@ -19,20 +19,32 @@ class Illustration extends Model
         'filename',
         'alt',
         'extension',
-        'paragraph_id',
+        'chapter_id',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
-     */
+    */
+
     protected $hidden = [
         'extension',
+        'created_at',
+        'updated_at',
     ];
 
-    public function paragraph(): BelongsTo
+    protected $appends = ['url'];
+
+    public function getUrlAttribute(): string
     {
-        return $this->belongsTo(Paragraphe::class);
+        $chapter = Chapter::find($this->chapter_id);
+        $story = Story::find($chapter->story_id);
+        return asset('storage/illustrations/'.$story->title. '/'. $this->filename . '.' . $this->extension);
+    }
+
+    public function chapter(): BelongsTo
+    {
+        return $this->belongsTo(Chapter::class);
     }
 }
