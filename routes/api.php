@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PromptController;
+use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\SpeechController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\TeaserController;
@@ -61,3 +62,6 @@ Route::post('/chapter/{storyId}', [ChapterController::class, 'insert']);
 
 // SPEECH ROUTES
 Route::post('/speech', [SpeechController::class, 'insert']);
+
+// SPEAKER ROUTES
+Route::get('/speakers', [SpeakerController::class, 'index']);
