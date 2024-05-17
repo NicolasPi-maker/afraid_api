@@ -69,7 +69,7 @@ class StoryController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Not implemented yet',
-        ], 500);
+        ]);
     }
 
     private function storeStory($story): Story
