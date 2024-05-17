@@ -42,7 +42,7 @@ class SpeakerSeeder extends Seeder
             'xi-api-key' => env('ELEVEN_LABS_API_T2S_KEY'),
         ])->withOptions([
             'verify' => false,
-        ])->get(env('ELEVEN_LABS_API_VOICE_URL'));
+        ])->get('https://api.elevenlabs.io/v1/text-to-speech/');
 
         if($response->failed()) {
             return [];
