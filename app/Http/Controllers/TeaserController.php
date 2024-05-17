@@ -16,9 +16,14 @@ class TeaserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $teasers = Teaser::all()->sortBy('created_at');
+        $teasers->load('thumbnails');
+        return response()->json([
+            'success' => true,
+            'data' => $teasers,
+        ]);
     }
 
     public function insert(Request $request): JsonResponse
@@ -117,9 +122,20 @@ class TeaserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Teaser $teaser)
+    public function show(string $teaserId): JsonResponse
     {
-        //
+        try {
+            $teaser = Teaser::with('thumbnails')->find($teaserId);
+            return response()->json([
+                'success' => true,
+                'data' => $teaser,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 

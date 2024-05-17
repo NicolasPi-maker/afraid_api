@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,10 +22,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
         'firstname',
         'role_id',
         'subscription_id',
+        'is_newsletter_subscriber',
     ];
 
     /**
@@ -36,6 +37,8 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'subscription_id',
+        'role_id',
     ];
 
     /**

@@ -18,6 +18,28 @@ class AuthController extends Controller
     public function __construct()
     {}
 
+    public function signIn(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string',
+        ]);
+        $email = $request->get('email');
+        $password = $request->get('password');
+        try {
+            $this->createUser($email, $password);
+            return response()->json([
+                'success' => true,
+                'message' => 'Utilisateur créé avec succès !',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function login(Request $request): JsonResponse
     {
         $request->validate([

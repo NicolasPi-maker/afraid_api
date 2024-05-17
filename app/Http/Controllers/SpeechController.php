@@ -30,7 +30,7 @@ class SpeechController extends Controller
             'language' => 'required|array',
         ]);
 
-        $story = Story::find($request->get('story_id'));
+        $story = Story::with('chapters.paragraphs')->find($request->get('story_id'));
         $speaker = $request->get('speaker');
         $language = $request->get('language');
 

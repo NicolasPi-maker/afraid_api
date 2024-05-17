@@ -53,6 +53,8 @@ Route::get('/story/{id}', [StoryController::class, 'show']);
 // TEASER ROUTES
 Route::post('/teaser', [TeaserController::class, 'insert']);
 Route::post('/teaser/generate', [TeaserController::class, 'generate']);
+Route::get('/teasers', [TeaserController::class, 'index']);
+Route::get('/teaser/{id}', [TeaserController::class, 'show']);
 
 // CHAPTER ROUTES
 Route::post('/chapter/{storyId}', [ChapterController::class, 'insert']);

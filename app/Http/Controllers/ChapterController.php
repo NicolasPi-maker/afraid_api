@@ -76,12 +76,16 @@ class ChapterController extends Controller
         $file = file_get_contents($illustration);
         $storagePath = 'illustrations/' . $story['title'] . '/' . $chapter['title'] . '.jpg';
         Storage::disk('public')->put($storagePath, $file);
-        Illustration::create([
-            'filename' => $chapter['title'],
-            'alt' => $chapter['title'],
-            'extension' => 'jpg',
-            'chapter_id' => $chapterId,
-        ]);
+        try {
+            Illustration::create([
+                'filename' => $chapter['title'],
+                'alt' => $chapter['title'],
+                'extension' => 'jpg',
+                'chapter_id' => $chapterId,
+            ]);
+        } catch (\Exception $e) {
+            throw new \Exception('Error while storing illustration: ' . $e->getMessage());
+        }
     }
 
     /**

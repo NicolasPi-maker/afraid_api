@@ -20,7 +20,6 @@ class Teaser extends Model
     ];
 
     protected $hidden = [
-        'story_id',
         'created_at',
         'updated_at',
     ];

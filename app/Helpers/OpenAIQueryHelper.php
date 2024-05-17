@@ -71,7 +71,7 @@ Class OpenAIQueryHelper
 
     public static function generateStoryFromOpenAI(string $prompt, string $title, string $teaserContent, string $language): \stdClass|null
     {
-        $directive = 'Rédige une histoire en '. $language .' contenant 2 chapitres de au moins 2 paragraphes de 6 lignes minimum à partir du texte' . $prompt . ' et du teaser :' . $teaserContent . '.';
+        $directive = 'Rédige une histoire en '. $language .' contenant 2 chapitres de au moins 3 paragraphes de 6 lignes minimum à partir du texte' . $prompt . ' et du teaser :' . $teaserContent . '.';
         $format = 'Retourne une réponse au format JSON suivant : {
             "title": '. $title .',
             "chapters": [

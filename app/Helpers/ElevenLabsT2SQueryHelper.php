@@ -34,7 +34,6 @@ class ElevenLabsT2SQueryHelper
     public static function getFullTextFromStory($story): string
     {
         $fullText = '';
-        $story->load('chapters.paragraphs');
         foreach ($story->chapters as $chapter) {
             $fullText .= $chapter->title . "\n";
             foreach ($chapter->paragraphs as $paragraph) {
