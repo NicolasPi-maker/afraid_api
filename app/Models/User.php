@@ -30,6 +30,7 @@ class User extends Authenticatable
         'is_newsletter_subscriber',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
