@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('firstname')->nullable();
+            $table->string('lastname')->nullable();
             $table->string('username')->unique()->nullable();
-            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('role_id')->default(3);
             $table->boolean('is_newsletter_subscriber')->default(false);
             $table->unsignedBigInteger('subscription_id')->nullable();
             $table->timestamps();

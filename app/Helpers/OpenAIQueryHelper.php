@@ -10,13 +10,18 @@ Class OpenAIQueryHelper
     public function __construct() {}
     private static function chatGPT(array $query)
     {
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
-            'Content-Type' => 'application/json',
-        ])->withOptions([
-            'verify' => false,
-        ])->post(env('OPENAI_API_TEXTGEN_URL'), $query);
-        return json_decode($response->body())->choices[0]->message->content;
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                'Content-Type' => 'application/json',
+            ])->withOptions([
+                'verify' => false,
+            ])->post(env('OPENAI_API_TEXTGEN_URL'), $query);
+            $decodedResponse = json_decode($response->body());
+            return $decodedResponse->choices[0]->message->content;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     private static function chatDalle(array $query)
@@ -32,7 +37,7 @@ Class OpenAIQueryHelper
     }
     public static function generateTeaserFromOpenAI($prompt): \stdClass|null
     {
-        $format = 'Retourne moi le résultat du contenu en suivant le format json suivant : {
+        $format = 'Retourne moi le résultat du contenu au format JSON suivant : {
             "title": "Titre de l\'histoire",
             "content": "Teaser de l\'histoire",
             "illustration": "Génère le prompt Dalle pour illustrer le contenu du teaser en suivant les instructions suivantes :
@@ -51,7 +56,7 @@ Class OpenAIQueryHelper
                      7. Shading (Three-point lighting, Butterfly Lightning, backlighting, studio lighting, etc.)
                      8. Angle of view (bird\'s eye view, worm\'s eye view, etc.)"
         }';
-        $directive = 'Rédige un teaser de deux phrases qui donnent envie de lire l\'histoire qui sera générée à partir du texte suivant dans un thème horrifique :';
+        $directive = 'Rédige un teaser de deux phrases qui donnent envie de lire l\'histoire qui sera générée à partir du texte suivant dans un thème horrifique et cauchemardesque :';
         if($prompt !== null && $prompt !== '') {
             $formattedPrompt = $directive . ' ' . $prompt . '. ' . $format;
 
@@ -64,6 +69,9 @@ Class OpenAIQueryHelper
                 ->build();
 
             $response = self::chatGPT($query);
+            if(!json_validate($response)) {
+                $response = self::correctJsonFormat($response);
+            }
             return json_decode($response);
         }
         return null;
@@ -153,5 +161,20 @@ Class OpenAIQueryHelper
 
         $response = self::chatGPT($query);
         return json_decode($response)->prompt;
+    }
+
+    public static function correctJsonFormat($jsonString): string
+    {
+        // Supprime les virgules à la fin d'un objet JSON
+        $correctedJsonString = preg_replace('/,\s*(?=})/', '', $jsonString);
+
+        // Vérifie si le JSON corrigé est valide
+        json_decode($correctedJsonString);
+        if (json_last_error() == JSON_ERROR_NONE) {
+            return $correctedJsonString;
+        } else {
+            // Si le JSON corrigé est toujours invalide, renvoie l'erreur
+            return json_last_error_msg();
+        }
     }
 }

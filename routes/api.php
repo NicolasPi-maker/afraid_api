@@ -30,6 +30,7 @@ Route::get('/', function () {
 //LOGIN ROUTES
 Route::post('login', [AuthController::class, 'login']);
 Route::post('refresh', [AuthController::class, 'refresh']);
+Route::post('register', [AuthController::class, 'signUp']);
 
 ////PASSWORD RESET ROUTES
 //Route::get('reset-password/{token}', [ResetPasswordController::class, 'show']);
