@@ -18,16 +18,21 @@ class AuthController extends Controller
     public function __construct()
     {}
 
-    public function signIn(Request $request): JsonResponse
+    public function signUp(Request $request): JsonResponse
     {
         $request->validate([
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'username' => 'required|string',
         ]);
-        $email = $request->get('email');
         $password = $request->get('password');
+        $request->merge([
+            'password' => Hash::make($password),
+        ]);
         try {
-            $this->createUser($email, $password);
+            User::create($request->all());
             return response()->json([
                 'success' => true,
                 'message' => 'Utilisateur créé avec succès !',

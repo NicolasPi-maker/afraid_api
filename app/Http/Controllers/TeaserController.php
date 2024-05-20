@@ -107,6 +107,7 @@ class TeaserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
+                'teaser' => $teaser,
             ], 500);
         }
     }
