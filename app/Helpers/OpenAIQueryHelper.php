@@ -35,9 +35,9 @@ Class OpenAIQueryHelper
         $response = json_decode($response->body());
         return $response->data[0]->url;
     }
-    public static function generateTeaserFromOpenAI($prompt): \stdClass|null
+    public static function generateTeaserFromOpenAI($prompt, $language): \stdClass|null
     {
-        $format = 'Retourne moi le résultat du contenu au format JSON suivant : {
+        $format = 'Retourne moi le résultat en '.$language.' du contenu au format JSON suivant : {
             "title": "Titre de l\'histoire",
             "content": "Teaser de l\'histoire",
             "illustration": "Génère le prompt Dalle pour illustrer le contenu du teaser en suivant les instructions suivantes :
