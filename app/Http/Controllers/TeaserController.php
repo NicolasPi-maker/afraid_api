@@ -89,10 +89,14 @@ class TeaserController extends Controller
 //        $user = AuthHelper::getUserFromToken($request->bearerToken());
         $request->validate([
             'prompt' => 'required|string',
+            'language' => 'required|string',
         ]);
 
+        $prompt = $request->get('prompt');
+        $language = $request->get('language');
+
         try {
-            $teaser = OpenAIQueryHelper::generateTeaserFromOpenAI($request->get('prompt'));
+            $teaser = OpenAIQueryHelper::generateTeaserFromOpenAI($prompt, $language);
             $illustration = OpenAIQueryHelper::generateIllustrationFromDalle($teaser->illustration);
             $teaser->illustration = [
                 'description' => $teaser->illustration,
