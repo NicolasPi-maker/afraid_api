@@ -20,6 +20,7 @@ class Thumbnail extends Model
         'alt',
         'extension',
         'teaser_id',
+        'url'
     ];
 
     /**
@@ -30,14 +31,6 @@ class Thumbnail extends Model
     protected $hidden = [
         'extension',
     ];
-
-    protected $appends = ['url'];
-
-    public function getUrlAttribute(): string
-    {
-        $teaser = Teaser::find($this->teaser_id);
-        return asset('storage/thumbnails/'.$teaser->title. '/'. $this->filename . '.' . $this->extension);
-    }
 
     public function teaser(): BelongsTo
     {

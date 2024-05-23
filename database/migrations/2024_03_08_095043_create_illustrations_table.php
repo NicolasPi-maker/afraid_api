@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('alt');
             $table->string('extension');
             $table->unsignedBigInteger('chapter_id');
+            $table->text('url');
             $table->timestamps();
         });
 

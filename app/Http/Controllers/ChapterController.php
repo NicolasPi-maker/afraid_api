@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\OpenAIQueryHelper;
+use App\Jobs\TransferTmpFileToS3;
 use App\Models\Chapter;
 use App\Models\Illustration;
 use App\Models\Paragraphe;
@@ -72,17 +73,22 @@ class ChapterController extends Controller
 
     private function generateStoryIllustrations($story, string $chapterId, $chapter): void
     {
-        $illustration = OpenAIQueryHelper::generateIllustrationFromDalle($chapter['illustration']);
-        $file = file_get_contents($illustration);
-        $storagePath = 'illustrations/' . $story['title'] . '/' . $chapter['title'] . '.jpg';
-        Storage::disk('public')->put($storagePath, $file);
+        $illustrationUrl = OpenAIQueryHelper::generateIllustrationFromDalle($chapter['illustration']);
+        $disk = 'illustrations';
+        $storagePath = $story['title'] . '/' . $chapter['title'] . '.jpg';
         try {
-            Illustration::create([
+            $illustration = Illustration::create([
                 'filename' => $chapter['title'],
                 'alt' => $chapter['title'],
                 'extension' => 'jpg',
                 'chapter_id' => $chapterId,
+                'url' => $illustrationUrl,
             ]);
+            try {
+                TransferTmpFileToS3::dispatch($disk, $storagePath, $illustrationUrl, $illustration);
+            } catch (\Exception $e) {
+                throw new \Exception('Failed to save thumbnail to disk: ' . $e->getMessage());
+            }
         } catch (\Exception $e) {
             throw new \Exception('Error while storing illustration: ' . $e->getMessage());
         }

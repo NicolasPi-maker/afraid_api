@@ -20,6 +20,7 @@ class Illustration extends Model
         'alt',
         'extension',
         'chapter_id',
+        'url',
     ];
 
     /**
@@ -33,15 +34,6 @@ class Illustration extends Model
         'created_at',
         'updated_at',
     ];
-
-    protected $appends = ['url'];
-
-    public function getUrlAttribute(): string
-    {
-        $chapter = Chapter::find($this->chapter_id);
-        $story = Story::find($chapter->story_id);
-        return asset('storage/illustrations/'.$story->title. '/'. $this->filename . '.' . $this->extension);
-    }
 
     public function chapter(): BelongsTo
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\AuthHelper;
 use App\Helpers\OpenAIQueryHelper;
+use App\Jobs\TransferTmpFileToS3;
 use App\Models\Prompt;
 use App\Models\Teaser;
 use App\Models\Thumbnail;
@@ -63,19 +64,24 @@ class TeaserController extends Controller
         ]);
     }
 
-    private function storeTeaserThumbnail($teaser, $thumbnail): void
+    private function storeTeaserThumbnail($teaser, $thumbnailUrl): void
     {
-        $file = file_get_contents($thumbnail);
         try {
             $filename = 'teaser_' . $teaser->title;
-            $storagePath = 'thumbnails/' . $teaser->title . '/' . $filename . '.jpg';
-            Storage::disk('public')->put($storagePath, $file);
-            Thumbnail::create([
+            $disk = 'thumbnails';
+            $storagePath = $teaser->title .'/'. $filename . '.jpg';
+            $thumbnail = Thumbnail::create([
                 'filename' => $filename,
                 'alt' => $teaser->title,
                 'extension' => 'jpg',
                 'teaser_id' => $teaser->id,
+                'url' => $thumbnailUrl,
             ]);
+            try {
+                TransferTmpFileToS3::dispatch($disk, $storagePath, $thumbnailUrl, $thumbnail);
+            } catch (\Exception $e) {
+                throw new \Exception('Failed to save thumbnail to disk: ' . $e->getMessage());
+            }
         } catch (\Exception $e) {
             dd($e->getMessage());
         }
@@ -141,22 +147,5 @@ class TeaserController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Teaser $teaser)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Teaser $teaser)
-    {
-        //
     }
 }
