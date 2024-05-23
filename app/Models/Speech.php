@@ -21,6 +21,7 @@ class Speech extends Model
         'story_id',
         'speaker_id',
         'language_id',
+        'url'
     ];
 
     protected $hidden = [

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('speaker_id');
             $table->unsignedBigInteger('story_id');
             $table->unsignedBigInteger('language_id');
+            $table->text('url');
             $table->timestamps();
         });
 

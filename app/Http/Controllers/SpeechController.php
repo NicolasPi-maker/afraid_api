@@ -11,16 +11,9 @@ use Illuminate\Support\Facades\Storage;
 
 class SpeechController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
+     * Insert a newly created resource in storage.
      */
     public function insert(Request $request): JsonResponse
     {
@@ -57,14 +50,17 @@ class SpeechController extends Controller
         ];
         $speechFile = ElevenLabsT2SQueryHelper::generateTextToSpeech($storyFullText, $speaker['api_id'], $voiceSettings);
 
+        $disk = 'speeches';
         $filename = $story->title . '_' . $language['code'];
-        $storagePath = 'speeches/' .$story->title .'/'. $filename . '.mp3';
+        $storagePath = $story->title .'/'. $filename . '.mp3';
 
-        Storage::disk('public')->put($storagePath, $speechFile);
-        $this->storeSpeech($story, $speaker['id'], $language['id'], $filename);
+        Storage::disk($disk)->put($storagePath, $speechFile);
+        $s3Url = Storage::disk($disk)->url($storagePath);
+
+        $this->storeSpeech($story, $speaker['id'], $language['id'], $filename, $s3Url);
     }
 
-    private function storeSpeech(Story $story, string $speakerId, string $languageId, string $filename): void
+    private function storeSpeech(Story $story, string $speakerId, string $languageId, string $filename, string $fileUrl): void
     {
         Speech::create([
             'filename' => $filename,
@@ -72,30 +68,7 @@ class SpeechController extends Controller
             'story_id' => $story->id,
             'speaker_id' => $speakerId,
             'language_id' => $languageId,
+            'url' => $fileUrl,
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Speech $speech)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Speech $speech)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Speech $speech)
-    {
-        //
     }
 }
