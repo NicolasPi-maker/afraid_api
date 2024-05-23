@@ -32,14 +32,6 @@ class Speech extends Model
         'updated_at',
     ];
 
-    protected $appends = ['url'];
-
-    public function getUrlAttribute(): string
-    {
-        $story = Story::find($this->story_id);
-        return asset('storage/speeches/'.$story->title. '/'. $this->filename . '.' . $this->extension);
-    }
-
     public function story(): BelongsTo
     {
         return $this->belongsTo(Story::class);
