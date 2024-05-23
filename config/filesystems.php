@@ -81,7 +81,7 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'visibility' => 'public',
             'root' => 'speeches',
-            'scheme' => 'http',
+            'scheme' => env('APP_ENV') === 'local' ? 'http' : 'https',
         ],
 
         'thumbnails' => [
@@ -95,7 +95,7 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'visibility' => 'public',
             'root' => 'thumbnails',
-            'scheme' => 'http',
+//            'scheme' => 'http',
         ],
 
     ],
