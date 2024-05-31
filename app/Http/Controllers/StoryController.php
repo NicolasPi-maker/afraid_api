@@ -46,7 +46,12 @@ class StoryController extends Controller
         $speaker = $request->get('speaker');
         $language = $request->get('language');
         try {
-            $generatedStory = OpenAIQueryHelper::generateStoryFromOpenAI($prompt, $teaser['title'], $teaser['content'], $language['code']);
+            $generatedStory = OpenAIQueryHelper::generateStoryFromOpenAI(
+                $prompt,
+                $teaser['title'],
+                $teaser['content'],
+                $language['code']
+            );
             $storedPrompt = $this->storePrompt($prompt);
             $storedStory = $this->storeStory($generatedStory);
             $storedStory->languages()->attach($language['id']);

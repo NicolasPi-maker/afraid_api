@@ -31,7 +31,9 @@ Class OpenAIQueryHelper
             'Content-Type' => 'application/json',
         ])->withOptions([
             'verify' => false,
-        ])->post(env('OPENAI_API_DALL_E_URL'), $query);
+        ])->timeout(120)
+            ->retry(3, 120000)
+            ->post(env('OPENAI_API_DALL_E_URL'), $query);
         $response = json_decode($response->body());
         return $response->data[0]->url;
     }
@@ -79,7 +81,7 @@ Class OpenAIQueryHelper
 
     public static function generateStoryFromOpenAI(string $prompt, string $title, string $teaserContent, string $language): \stdClass|null
     {
-        $directive = 'Rédige une histoire en '. $language .' contenant 2 chapitres de au moins 2 paragraphes de 6 lignes minimum à partir du texte' . $prompt . ' et du teaser :' . $teaserContent . '.';
+        $directive = 'Rédige une histoire en '. $language .' contenant 3 chapitres de au moins 3 paragraphes de 6 lignes minimum à partir du texte' . $prompt . ' et du teaser :' . $teaserContent . '.';
         $format = 'Retourne une réponse au format JSON suivant : {
             "title": '. $title .',
             "chapters": [

@@ -73,10 +73,10 @@ class ChapterController extends Controller
 
     private function generateStoryIllustrations($story, string $chapterId, $chapter): void
     {
-        $illustrationUrl = OpenAIQueryHelper::generateIllustrationFromDalle($chapter['illustration']);
         $disk = 'illustrations';
         $storagePath = $story['title'] . '/' . $chapter['title'] . '.jpg';
         try {
+            $illustrationUrl = OpenAIQueryHelper::generateIllustrationFromDalle($chapter['illustration']);
             $illustration = Illustration::create([
                 'filename' => $chapter['title'],
                 'alt' => $chapter['title'],

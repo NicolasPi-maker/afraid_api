@@ -17,7 +17,9 @@ class ElevenLabsT2SQueryHelper
             'xi-api-key' => env('ELEVEN_LABS_API_T2S_KEY'),
         ])->withOptions([
             'verify' => false,
-        ])->post(env('ELEVEN_LABS_API_T2S_URL').$voiceId, $query);
+        ])->timeout(120)
+            ->retry(3, 120000)
+            ->post(env('ELEVEN_LABS_API_T2S_URL').$voiceId, $query);
         return $response->body();
     }
 
