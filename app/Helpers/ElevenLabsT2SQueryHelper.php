@@ -18,7 +18,6 @@ class ElevenLabsT2SQueryHelper
         ])->withOptions([
             'verify' => false,
         ])->timeout(120)
-            ->retry(3, 120000)
             ->post(env('ELEVEN_LABS_API_T2S_URL').$voiceId, $query);
         return $response->body();
     }
