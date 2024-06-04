@@ -28,10 +28,12 @@ class SpeechController extends Controller
         $language = $request->get('language');
 
         try{
-            $this->generateStorySpeech($story, $speaker, $language);
+            $generatedSpeech = $this->generateStorySpeech($story, $speaker, $language);
             return response()->json([
                 'success' => true,
                 'message' => 'Speech generated successfully',
+                'data' => $generatedSpeech,
+
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -41,7 +43,7 @@ class SpeechController extends Controller
         }
     }
 
-    private function generateStorySpeech($story, $speaker, $language): void
+    private function generateStorySpeech($story, $speaker, $language)
     {
         $storyFullText = ElevenLabsT2SQueryHelper::getFullTextFromStory($story);
         $voiceSettings = [
@@ -58,6 +60,7 @@ class SpeechController extends Controller
         $s3Url = Storage::disk($disk)->url($storagePath);
 
         $this->storeSpeech($story, $speaker['id'], $language['id'], $filename, $s3Url);
+        return $speechFile;
     }
 
     private function storeSpeech(Story $story, string $speakerId, string $languageId, string $filename, string $fileUrl): void
