@@ -131,6 +131,56 @@ Class OpenAIQueryHelper
         return null;
     }
 
+    public static function generateStoryContinuationFromOpenAI($story, $language = 'FR'): \stdClass|null
+    {
+        if($story !== '') {
+            $directive = 'Rédige une suite inattendu à l\'histoire :'. $story.'.
+            Tu dois rédiger une suite dans la langue'. $language .' composée de 2 chapitres de 3 paragraphes de 6 lignes minimum en te basant sur la fin de l\'histoire précédente pour que le tout reste cohérent.';
+            $format = 'Retourne une réponse au format JSON suivant : {
+                "chapters": [
+                    {
+                        "title": "titre du chapitre",
+                        "number": "numéro de chapitre de type entier",
+                        "illustration": "Génère le prompt Dalle pour illustrer le contenu du chapitre en suivant les instructions suivantes :
+                            - Le prompt doit être une phrase qui décrit l\'illustration à générer
+                            - Le prompt doit être en anglais
+                            - Le prompt doit être court
+                            - Le prompt doit être pertinent par rapport au contenu du chapitre",
+                            - Le prompt doit être rédigé en suivant les règles de génération suivantes :
+                                 Dall-e Ai prompt requirements :
+                                 1. Subject of the prompt with lot of details (who, what, where, when)
+                                 2. Media style (photo, painting, drawing, manga, digital art, etc.)
+                                 3. The Style (comic, realistic, abstract, etc.)  and artist style (Picasso, Van Gogh, etc.)
+                                 4. Resolution (size of the image)
+                                 5. Mood (happy, sad, horror, etc.)
+                                 6. Color (black and white, color, etc.)
+                                 7. Shading (Three-point lighting, Butterfly Lightning, backlighting, studio lighting, etc.)
+                                 8. Angle of view (bird\'s eye view, worm\'s eye view, etc.)
+                        "paragraphs": [
+                            {
+                                "content": "contenu du paragraphe",
+                                "order": "numéro du paragraphe",
+                                "chapter_number": "numéro de chapitre"
+                            }
+                        ]
+                    }
+                ]
+            }';
+            $formattedPrompt = $directive . '.' . $format;
+            $queryBuilder = new OpenAiQueryBuilder();
+            $query = $queryBuilder
+                ->setModel('gpt-3.5-turbo')
+                ->setRole('user')
+                ->setContent($formattedPrompt)
+                ->setTemperature(1)
+                ->build();
+
+            $response = self::chatGPT($query);
+            return json_decode($response);
+        }
+        return null;
+    }
+
     public static function generateIllustrationFromDalle(string $prompt): string|null
     {
         if ($prompt !== '') {

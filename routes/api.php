@@ -51,6 +51,7 @@ Route::post('/prompt/random', [PromptController::class, 'generateRandomPrompt'])
 // STORY ROUTES
 Route::post('/story', [StoryController::class, 'insert']);
 Route::get('/story/{id}', [StoryController::class, 'show']);
+Route::get('/story/continuation/{storyId}', [StoryController::class, 'insertContinuation']);
 
 // TEASER ROUTES
 Route::post('/teaser', [TeaserController::class, 'insert']);

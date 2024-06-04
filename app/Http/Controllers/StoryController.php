@@ -38,20 +38,13 @@ class StoryController extends Controller
         $request->validate([
             'prompt' => 'required|string',
             'teaser' => 'required|array',
-            'speaker' => 'required|array',
             'language' => 'required|array',
         ]);
         $prompt = $request->get('prompt');
         $teaser = $request->get('teaser');
-        $speaker = $request->get('speaker');
         $language = $request->get('language');
         try {
-            $generatedStory = OpenAIQueryHelper::generateStoryFromOpenAI(
-                $prompt,
-                $teaser['title'],
-                $teaser['content'],
-                $language['code']
-            );
+            $generatedStory = OpenAIQueryHelper::generateStoryFromOpenAI($prompt, $teaser['title'], $teaser['content'], $language['code']);
             $storedPrompt = $this->storePrompt($prompt);
             $storedStory = $this->storeStory($generatedStory);
             $storedStory->languages()->attach($language['id']);
@@ -64,6 +57,24 @@ class StoryController extends Controller
                     'teaser' => $teaser,
                     'generated_story' => $generatedStory,
                 ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function insertContinuation(string $storyId): JsonResponse
+    {
+        $story = Story::with('languages')->find($storyId);
+        $fullText = ElevenLabsT2SQueryHelper::getFullTextFromStory($story);
+        try {
+            $generatedStoryContinuation = OpenAIQueryHelper::generateStoryContinuationFromOpenAI($fullText, $story->languages->first()->code);
+            return response()->json([
+                'success' => true,
+                'data' => $generatedStoryContinuation,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -87,16 +98,4 @@ class StoryController extends Controller
             'content' => $prompt,
         ]);
     }
-    /**
-     * Leonardo Ai prompt requirements
-     * 1. Subject of the prompt with lot of details (who, what, where, when)
-     * 2. Media style (photo, painting, drawing, manga, digital art, etc.)
-     * 3. The Style (comic, realistic, abstract, etc.)  and artist style (Picasso, Van Gogh, etc.)
-     * 4. Resolution (size of the image)
-     * 5. Mood (happy, sad, horror, etc.)
-     * 6. Color (black and white, color, etc.)
-     * 7. Shading (Three-point lighting, Butterfly Lightning, backlighting, studio lighting, etc.)
-     * 8. Angle of view (bird's eye view, worm's eye view, etc.)
-     *
-     */
 }

@@ -31,13 +31,13 @@ class ChapterController extends Controller
         ]);
 
         $generatedStory = $request->get('generated_story');
-        $storedStory = Story::find($storyId);
+        $storedStory = Story::where('id', $storyId)->with('chapters')->first();
 
         try {
             $this->storeChapters($generatedStory, $storedStory);
             return response()->json([
                 'success' => true,
-                'data' => $storedStory,
+                'data' => $generatedStory,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -49,9 +49,11 @@ class ChapterController extends Controller
 
     private function storeChapters($generatedStory, $storedStory): void
     {
+        $chapterNumber = $storedStory->chapters->count() + 1;
         foreach ($generatedStory['chapters'] as $chapter) {
+            $chapter['number'] = $chapterNumber;
             $storedChapter = $this->storeChapter($chapter, $storedStory->id);
-            $this->generateStoryIllustrations($generatedStory, $storedChapter->id, $chapter);
+            $this->generateStoryIllustrations($storedStory, $storedChapter->id, $chapter);
             foreach ($chapter['paragraphs'] as $paragraph) {
                 Paragraphe::create([
                     'content' => $paragraph['content'],
@@ -59,6 +61,7 @@ class ChapterController extends Controller
                     'chapter_id' => $storedChapter->id,
                 ]);
             }
+            $chapterNumber++;
         }
     }
 
@@ -92,29 +95,5 @@ class ChapterController extends Controller
         } catch (\Exception $e) {
             throw new \Exception('Error while storing illustration: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Chapter $chapter)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Chapter $chapter)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Chapter $chapter)
-    {
-        //
     }
 }
